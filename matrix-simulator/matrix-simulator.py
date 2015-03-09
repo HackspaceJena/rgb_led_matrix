@@ -19,12 +19,13 @@ sock.bind((UDP_IP, UDP_PORT))
 while True:
     data, addr = sock.recvfrom(768)
     # strip newline
+    print type(data)
     data = data.strip()
-    print "message length:", len(data)
+    print "received {} bytes from {}:{}".format(len(data), addr[0], addr[1])
     print "received data:"
-    r = bytearray(data[0::3])
+    r = bytearray(data[2::3])
     g = bytearray(data[1::3])
-    b = bytearray(data[2::3])
+    b = bytearray(data[0::3])
     for j in range(16):
         for i in range(16):
             if (j*16 + i) < len(r) and (j*16 + i) < len(g) and (j*16 + i) < len(b):
