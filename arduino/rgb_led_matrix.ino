@@ -20,14 +20,14 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(WIDTH * HEIGHT, PIN, NEO_GRB + NEO_KHZ800);
 
 // Network configuration
-byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+byte mac[] = {0xFE, 0xED, 0x0D, 0xA0, 0x1E, 0xD5};
 IPAddress ip(172, 22, 239, 182);
 unsigned int localPort = 8888;
 
 // buffers for receiving and sending data
 char packetBuffer[UDP_PACKET_MAX_SIZE]; // buffer to hold incoming packet
 
-// Create EthernetUdp instance to send and receive packets over UDP
+// Create EthernetUDP instance to send and receive packets over UDP
 EthernetUDP Udp;
 
 void setup() {
@@ -41,8 +41,6 @@ void setup() {
     strip.setPixelColor(i, strip.Color(0, 0, 0));
   }
   strip.show();
-  Serial.begin(115200);
-  Serial.println("Ready.");
 }
 
 void loop() {
@@ -52,21 +50,11 @@ void loop() {
   if (packetSize) {
     // read the packet into packet buffer
     Udp.read(packetBuffer, UDP_PACKET_MAX_SIZE);
-    Serial.println("Received packet:");
-    Serial.print("Length: ");
-    Serial.println(packetSize);
     
-    // assume an incoming uncompressed BMP image      
-    // assume we know the pixels start at offset 54
     for (int i = 0; i < packetSize; i = i + 3) {
-      Serial.print(packetBuffer[i], HEX);
-      Serial.print(packetBuffer[i+1], HEX);
-      Serial.print(packetBuffer[i+2], HEX);
-      Serial.print(" ");
-      strip.setPixelColor(i / 3, packetBuffer[i], packetBuffer[i+1], packetBuffer[i+2]);
+      strip.setPixelColor(i / 3, packetBuffer[i+2], packetBuffer[i+1], packetBuffer[i]);
     }
-    Serial.print("\n");
     strip.show();
-  }  
+  }
 }
 
